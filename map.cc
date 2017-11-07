@@ -54,6 +54,7 @@ public:
 		NODE_SET_PROTOTYPE_METHOD(tpl, "set", Set);
 		NODE_SET_PROTOTYPE_METHOD(tpl, "delete", Delete);
 		NODE_SET_PROTOTYPE_METHOD(tpl, "get", Get);
+		NODE_SET_PROTOTYPE_METHOD(tpl, "_keysAsArray", KeysAsArray);
 
 		constructor.Reset(isolate, tpl->GetFunction());
 		exports->Set(v8::String::NewFromUtf8(isolate, "WeakValueMap"), tpl->GetFunction());
@@ -133,6 +134,19 @@ private:
 
 		if (obj->map->count(key) == 1)
 			args.GetReturnValue().Set((*(obj->map))[key].value);
+	}
+
+	static void KeysAsArray(const v8::FunctionCallbackInfo<v8::Value>& args) {
+		v8::Isolate* isolate = args.GetIsolate();
+		WeakValueMap* obj = ObjectWrap::Unwrap<WeakValueMap>(args.Holder());
+
+		v8::Local<v8::Array> keysArray = v8::Array::New(isolate, obj->map->size());
+
+		int i = 0;
+		for (auto entry = obj->map->begin(); entry != obj->map->end(); ++entry) {
+			keysArray->Set(i++, v8::String::NewFromUtf8(isolate, entry->first.data()));
+		}
+		args.GetReturnValue().Set(keysArray);
 	}
 
 	static v8::Persistent<v8::Function> constructor;

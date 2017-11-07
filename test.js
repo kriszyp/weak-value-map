@@ -19,6 +19,8 @@ test('map', function(assert) {
 	assert.strictEqual(map.get(4), false);
 	assert.strictEqual(map.get(5).getTime(), d2.getTime());
 	assert.deepEqual(map.get(6), {6: 'six'});
+	let keys = Array.from(map.keys())
+	assert.deepEqual(keys, ['1', '2', '3', '4', '5', '6'])
 	assert.end();
 });
 
