@@ -107,7 +107,7 @@ private:
 		args.GetReturnValue().Set( args.This() );
 	}
 
-	void keys_as_array(const v8::FunctionCallbackInfo<v8::Value>& args) {
+	void keys_as_array( Args &args) {
 		auto isolate = args.GetIsolate();
 		auto obj = ObjectWrap::Unwrap<WeakValueMap>(args.Holder());
 
