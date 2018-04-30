@@ -23,6 +23,8 @@ test('map', function(assert) {
 	assert.strictEqual(map.get(1), 'changed');
 	map.delete(1);
 	assert.strictEqual(map.get(1), undefined);
+	let keys = Array.from(map.keys())
+	assert.deepEqual(keys, ['2', '3', '4', '5', '6'])
 	assert.end();
 });
 
