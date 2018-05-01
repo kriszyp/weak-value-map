@@ -19,12 +19,15 @@ test('map', function(assert) {
 	assert.strictEqual(map.get(4), false);
 	assert.strictEqual(map.get(5).getTime(), d2.getTime());
 	assert.deepEqual(map.get(6), {6: 'six'});
+	assert.strictEqual(map.size, 6);
 	map.set(1, 'changed');
 	assert.strictEqual(map.get(1), 'changed');
+	assert.strictEqual(map.size, 6);
 	map.delete(1);
 	assert.strictEqual(map.get(1), undefined);
 	let keys = Array.from(map.keys())
 	assert.deepEqual(keys, ['2', '3', '4', '5', '6'])
+	assert.strictEqual(map.size, 5);
 	assert.end();
 });
 
@@ -40,14 +43,17 @@ test('gc', function(assert) {
 	eval(""); gc();
 	assert.deepEqual(map.get(1), obj);
 	assert.deepEqual(map.get(2), obj);
+	assert.strictEqual(map.size, 2);
 	obj2 = null;
 	eval(""); gc();
 	assert.deepEqual(map.get(1), obj);
 	assert.strictEqual(map.get(2), undefined);
+	assert.strictEqual(map.size, 1);
 	obj1 = null;
 	eval(""); gc();
 	assert.strictEqual(map.get(1), undefined);
 	assert.strictEqual(map.get(2), undefined);
+	assert.strictEqual(map.size, 0);
 	assert.end();
 });
 
@@ -62,5 +68,6 @@ test('exception', function(assert) {
 		err = e;
 	}
 	assert.strictEqual(err, 42);
+	assert.strictEqual(map.size, 0);
 	assert.end();
 });
