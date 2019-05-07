@@ -55,6 +55,6 @@ struct ObjectBuilder {
 		auto cls_name = intern_string( isolate, name );
 		cls->SetClassName( cls_name );
 		body( { isolate, cls } );
-		target->Set( cls_name, cls->GetFunction() );
+		target->Set( isolate->GetCurrentContext(), cls_name, cls->GetFunction( isolate->GetCurrentContext() ).ToLocalChecked() );
 	}
 };

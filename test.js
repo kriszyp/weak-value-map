@@ -28,8 +28,6 @@ test('map', function(assert) {
 	let keys = Array.from(map.keys())
 	assert.deepEqual(keys, ['2', '3', '4', '5', '6'])
 	assert.strictEqual(map.size, 5);
-	let keys = Array.from(map.keys())
-	assert.deepEqual(keys, ['2', '3', '4', '5', '6'])
 	assert.end();
 });
 

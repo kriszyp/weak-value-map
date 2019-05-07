@@ -43,7 +43,7 @@ public:
 			cls.add_method( "get",    wrap<&WeakValueMap::get_method> );
 			cls.add_method( "set",    wrap<&WeakValueMap::set_method> );
 			cls.add_method( "delete", wrap<&WeakValueMap::delete_method> );
-			cls.add_method( "_keysAsArray", wrap<&WeakValueMap::keys_as_array> );
+			cls.add_method( "_keysAsArray", keys_as_array );
 		});
 	}
 
@@ -77,7 +77,8 @@ private:
 	template< method_t method >
 	static void wrap( Args &args ) {
 		auto obj = ObjectWrap::Unwrap<WeakValueMap>( args.Holder() );
-		auto &&key = v8::String::Utf8Value{ args.GetIsolate(), args[0]->ToString() };
+		auto isolate = args.GetIsolate();
+		auto &&key = v8::String::Utf8Value{ args.GetIsolate(), args[0]->ToString(isolate->GetCurrentContext()).ToLocalChecked() };
 		if( *key )
 			(obj->*method)( args, *key );
 	}
@@ -107,7 +108,7 @@ private:
 		args.GetReturnValue().Set( args.This() );
 	}
 
-	void keys_as_array( Args &args) {
+	static void keys_as_array( Args &args) {
 		auto isolate = args.GetIsolate();
 		auto obj = ObjectWrap::Unwrap<WeakValueMap>(args.Holder());
 
@@ -115,7 +116,7 @@ private:
 
 		int i = 0;
 		for (auto entry = obj->map.begin(); entry != obj->map.end(); ++entry) {
-			keysArray->Set(i++, v8::String::NewFromUtf8(isolate, entry->first.data()));
+			keysArray->Set(isolate->GetCurrentContext(), i++, v8::String::NewFromUtf8(isolate, entry->first.data()));
 		}
 		args.GetReturnValue().Set(keysArray);
 	}
