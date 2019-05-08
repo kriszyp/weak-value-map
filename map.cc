@@ -24,7 +24,6 @@ struct Element {
 	void set(v8::Isolate *isolate, v8::Local<v8::Value> handle) {
 		value.Reset(isolate, handle);
 		value.SetWeak(this, finalizationCb, v8::WeakCallbackType::kParameter);
-		value.MarkIndependent();
 	}
 
 	Element(Map &map, std::string key) : map{map}, key{key} {};
@@ -57,7 +56,7 @@ private:
 
 		//Make sure this is a new-call or throw a type error
 		if (!args.IsConstructCall()) {
-			auto msg = v8::String::NewFromUtf8(isolate, "Constructor WeakValueMap requires 'new'");
+			auto msg = v8::String::NewFromUtf8(isolate, "Constructor WeakValueMap requires 'new'", v8::NewStringType::kNormal).ToLocalChecked();
 			isolate->ThrowException(v8::Exception::TypeError(msg));
 			return;
 		}
@@ -116,7 +115,7 @@ private:
 
 		int i = 0;
 		for (auto entry = obj->map.begin(); entry != obj->map.end(); ++entry) {
-			keysArray->Set(isolate->GetCurrentContext(), i++, v8::String::NewFromUtf8(isolate, entry->first.data()));
+			keysArray->Set(isolate->GetCurrentContext(), i++, v8::String::NewFromUtf8(isolate, entry->first.data(), v8::NewStringType::kNormal).ToLocalChecked());
 		}
 		args.GetReturnValue().Set(keysArray);
 	}
