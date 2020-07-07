@@ -5,7 +5,7 @@ A collection of key/value pairs in which the values are weakly referenced.
 ## Install
 
 ```bash
-$ npm install weak-value-map
+$ npm install weakvaluemap
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ Initialization
 
 ```js
 'use strict';
-var WeakValueMap = require('weak-value-map');
+var WeakValueMap = require('weakvaluemap');
 
 var map = new WeakValueMap();
 ```
@@ -42,6 +42,14 @@ map.get(3);
 // => "hijk"
 ```
 
+### Iterate Keys
+
+You can iterate through the keys:
+```
+for (let key of map.keys()) {
+	map.get(key);
+}
+```
 ##License
 
 MIT
